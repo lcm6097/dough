@@ -27,29 +27,14 @@ class DataManipulation:
             return np.log(df.pct_change()+1)
         else:
             return df.pct_change()
+    
+    def _get_market_data(self, start_date=None, end_date=None, market_ticker="^GSPC"):
+        return wb.DataReader(market_ticker, data_source='yahoo',
+                                             start='1970-1-1')['Close']
         
 
-class Stock(DataManipulation):
-    def __init__(self,ticker):
-        self.symbol = ticker
-        self.historical_data = wb.DataReader(self.symbol, data_source='yahoo',
-                                             start='1970-1-1')['Close']
-    
-    def volatility(self):
-        # Assumes 5 year volatility
-        five_years_ago = (datetime.today()-relativedelta(years=5)).strftime("%Y-%m-%d")
-        tday = datetime.today().strftime("%Y-%m-%d")
-        temp_df = self._subset_by_dates(self.historical_data, 
-                                   five_years_ago, tday)
-        temp_var = temp_df.values.std()
-        return temp_var
-    
-    def plot(self, start_date=None, end_date=None):
-        return self._subset_by_dates(self.historical_data, start_date, end_date)\
-            .plot(figsize=(16,10))
-    
-    def plot_returns(self, start_date=None, end_date=None):
-        return self._calculate_returns(
-                self._subset_by_dates(
-                    self.historical_data, start_date, end_date))\
-            .plot(figsize=(16,10))
+        
+        
+        
+        
+        
